@@ -23,6 +23,10 @@ $jsonString = CallAPI("GET","https://jl.githost.io/api/v4/users?private_token=$p
 $jsonObject = json_decode($jsonString);
 WriteData($jsonObject, $keys);
 
+//json is in format:
+//{[{key1:value1, key2:value2,...keyN:valueN},...{key1:value1, key2:value2,...keyN:valueN}]}
+// $keys[] contains the key for the key/value pairs we're interested in.
+
 function WriteData($jsonObject, $keys) {
 
 	foreach($jsonObject as $userObject) {
