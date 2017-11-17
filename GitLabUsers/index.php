@@ -2,7 +2,6 @@
 $private_token=$_GET["token"];
 
 $keys = ["name","username","state","created_at","location","last_sign_in_at","confirmed_at","last_activity_at","last_activity_on","current_sign_in_at","email"];
-
 $row  =  "";
 for($x = 0; $x < count($keys); $x++) {
 	$row .=  FormatItem($keys[$x] );
@@ -10,16 +9,18 @@ for($x = 0; $x < count($keys); $x++) {
 $row .= "clarity_name";
 echo $row;
 
-$jsonString = CallAPI("GET","https://jl.githost.io/api/v4/users?private_token=$private_token&active=true&per_page=100&page=1");
+$url = "https://jl.githost.io/api/v4/users?private_token=$private_token&active=true&per_page=100&page=";
+
+$jsonString = CallAPI("GET",$url."1");
 $jsonObject = json_decode($jsonString);
 WriteData($jsonObject, $keys);
-$jsonString = CallAPI("GET","https://jl.githost.io/api/v4/users?private_token=$private_token&active=true&per_page=100&page=2");
+$jsonString = CallAPI("GET",$url."2");
 $jsonObject = json_decode($jsonString);
 WriteData($jsonObject, $keys);
-$jsonString = CallAPI("GET","https://jl.githost.io/api/v4/users?private_token=$private_token&active=true&per_page=100&page=3");
+$jsonString = CallAPI("GET",$url."3");
 $jsonObject = json_decode($jsonString);
 WriteData($jsonObject, $keys);
-$jsonString = CallAPI("GET","https://jl.githost.io/api/v4/users?private_token=$private_token&active=true&per_page=100&page=4");
+$jsonString = CallAPI("GET",$url."4");
 $jsonObject = json_decode($jsonString);
 WriteData($jsonObject, $keys);
 
