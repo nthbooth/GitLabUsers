@@ -1,49 +1,58 @@
 <?php
 $private_token=$_GET["token"];
-
+$pages=isset($_GET['pages']) ? $_GET['pages'] : 4 ;
 $keys = ["name","username","state","created_at","location","last_sign_in_at","confirmed_at","last_activity_at","last_activity_on","current_sign_in_at","email"];
+
 $row  =  "";
-for($x = 0; $x < count($keys); $x++) {
-	$row .=  FormatItem($keys[$x] );
-}
+$row .= ConvertArrayToCSV($keys); 
 $row .= "clarity_name";
 echo $row;
 
 $url = "https://jl.githost.io/api/v4/users?private_token=$private_token&active=true&per_page=100&page=";
-
-$jsonString = CallAPI("GET",$url."1");
-$jsonObject = json_decode($jsonString);
-WriteData($jsonObject, $keys);
-$jsonString = CallAPI("GET",$url."2");
-$jsonObject = json_decode($jsonString);
-WriteData($jsonObject, $keys);
-$jsonString = CallAPI("GET",$url."3");
-$jsonObject = json_decode($jsonString);
-WriteData($jsonObject, $keys);
-$jsonString = CallAPI("GET",$url."4");
-$jsonObject = json_decode($jsonString);
-WriteData($jsonObject, $keys);
-
-//json is in format:
+//json returned from Gitlab is in format:
 //{[{key1:value1, key2:value2,...keyN:valueN},...{key1:value1, key2:value2,...keyN:valueN}]}
 // $keys[] contains the key for the key/value pairs we're interested in.
+
+for($page = 1; $page <= $pages; $page++) {
+	$jsonString = CallAPI("GET",$url.$page);
+	$jsonObject = json_decode($jsonString);
+	if (count($jsonObject)==0) {
+		echo "<br/>Did not retrieve data from page ".$page." onwards.";break;
+	}
+	WriteData($jsonObject, $keys);
+}
 
 function WriteData($jsonObject, $keys) {
 
 	foreach($jsonObject as $userObject) {
-		$row  =  "<br>";
-		for($x = 0; $x < count($keys); $x++) {
-			$item = $userObject -> $keys[$x];
-			$row .= FormatItem($item);
-			
-			if ($keys[$x] == "email" ) {
-				$row .= FormatItem( NameInEmailAddress($item) );
-			}
-			
-		}
+		$row  =  "<br/>";
+		$row .= ConvertObjectToCSV($userObject, $keys);
+		$email = $userObject -> email;
+		$row .= FormatItem( GetNameInEmailAddress($email) ); 
 		echo rtrim($row,",");
 	}
+	
 } 
+function ConvertArrayToCSV($keys) {
+	$csvText  =  "";
+	for($x = 0; $x < count($keys); $x++) {
+		$csvText .=  FormatItem($keys[$x] );
+	}
+	return $csvText;
+}
+
+function ConvertObjectToCSV($object, $keys) {
+	$csvText="";
+	for($x = 0; $x < count($keys); $x++) {
+		$item = $object -> $keys[$x];
+		$csvText .= FormatItem($item);
+	}
+	return $csvText;
+}
+
+function FormatItem($item) {
+    return  chr(34).$item.chr(34).","  ;
+}
 
 function CallAPI($method, $url, $data = false)
 {
@@ -78,10 +87,7 @@ function CallAPI($method, $url, $data = false)
 
     return $result;
 }
-function FormatItem($item) {
-    return  chr(34).$item.chr(34).","  ;
-}
-function NameInEmailAddress($email) {
+function GetNameInEmailAddress($email) {
 //takes an email in format aaaa.bbbb.cccc@xyz and returns  "cccc, aaaa". Underscores or periods can be used to delimit user name. 
     $email1 = str_replace("_",".",$email);
     $emailParts = explode("@",$email1);
