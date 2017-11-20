@@ -1,7 +1,7 @@
 <?php
 $private_token=$_GET["token"];
 $pages=isset($_GET['pages']) ? $_GET['pages'] : 4 ;
-$keys = ["name","username","state","created_at","location","last_sign_in_at","confirmed_at","last_activity_at","last_activity_on","current_sign_in_at","email"];
+$keys = ["name","username","state","created_at","location","last_sign_in_at","confirmed_at","last_activity_on","current_sign_in_at","email"];
 
 $row  =  "";
 $row .= ConvertArrayToCSV($keys); 
