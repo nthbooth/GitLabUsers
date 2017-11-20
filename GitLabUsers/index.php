@@ -44,7 +44,7 @@ function ConvertArrayToCSV($keys) {
 function ConvertObjectToCSV($object, $keys) {
 	$csvText="";
 	for($x = 0; $x < count($keys); $x++) {
-		$item = $object -> $keys[$x];
+		$item = $object -> {$keys[$x]};
 		$csvText .= FormatItem($item);
 	}
 	return $csvText;
