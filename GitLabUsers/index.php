@@ -44,7 +44,7 @@ function ConvertObjectToCSV($object, $keys) {
 	return $csvText;
 }
 function FormatItem($item) {
-    return  chr(34).$item.chr(34).","  ;
+    return  "\"$item\","  ;
 }
 function CallAPI($method, $url, $data = false)
 {
