@@ -1,18 +1,15 @@
 <?php
 $private_token=$_GET["token"];
 $pages=isset($_GET['pages']) ? $_GET['pages'] : 4 ;
-$keys = ["name","username","state","created_at","location","last_sign_in_at","confirmed_at","last_activity_at","last_activity_on","current_sign_in_at","email","two_factor_enabled"];
-
+$keys = ["name","username","state","created_at","location","last_sign_in_at","confirmed_at","last_activity_on","current_sign_in_at","email"];
 $row  =  "";
 $row .= ConvertArrayToCSV($keys); 
 $row .= "clarity_name";
 echo $row;
-
 $url = "https://jl.githost.io/api/v4/users?private_token=$private_token&active=true&per_page=100&page=";
 //json returned from Gitlab is in format:
 //{[{key1:value1, key2:value2,...keyN:valueN},...{key1:value1, key2:value2,...keyN:valueN}]}
 // $keys[] contains the key for the key/value pairs we're interested in.
-
 for($page = 1; $page <= $pages; $page++) {
 	$jsonString = CallAPI("GET",$url.$page);
 	$jsonObject = json_decode($jsonString);
@@ -21,9 +18,7 @@ for($page = 1; $page <= $pages; $page++) {
 	}
 	WriteData($jsonObject, $keys);
 }
-
 function WriteData($jsonObject, $keys) {
-
 	foreach($jsonObject as $userObject) {
 		$row  =  "<br/>";
 		$row .= ConvertObjectToCSV($userObject, $keys);
@@ -40,29 +35,24 @@ function ConvertArrayToCSV($keys) {
 	}
 	return $csvText;
 }
-
 function ConvertObjectToCSV($object, $keys) {
 	$csvText="";
 	for($x = 0; $x < count($keys); $x++) {
-		$item = $object -> $keys[$x];
+		$item = $object -> {$keys[$x]};
 		$csvText .= FormatItem($item);
 	}
 	return $csvText;
 }
-
 function FormatItem($item) {
     return  chr(34).$item.chr(34).","  ;
 }
-
 function CallAPI($method, $url, $data = false)
 {
     $curl = curl_init();
-
     switch ($method)
     {
         case "POST":
             curl_setopt($curl, CURLOPT_POST, 1);
-
             if ($data)
                 curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
             break;
@@ -73,18 +63,13 @@ function CallAPI($method, $url, $data = false)
             if ($data)
                 $url = sprintf("%s?%s", $url, http_build_query($data));
     }
-
     // Optional Authentication:
     //curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
     //curl_setopt($curl, CURLOPT_USERPWD, "username:password");
-
     curl_setopt($curl, CURLOPT_URL, $url);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-
     $result = curl_exec($curl);
-
     curl_close($curl);
-
     return $result;
 }
 function GetNameInEmailAddress($email) {
