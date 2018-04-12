@@ -6,7 +6,7 @@ $row  =  "";
 $row .= ConvertArrayToCSV($keys); 
 $row .= "clarity_name";
 echo $row;
-$url = "https://jl.githost.io/api/v4/users?private_token=$private_token&active=true&per_page=100&page=";
+$url = "https://jl.githost.io/api/v4/users?private_token=$private_token&per_page=100&page=";
 //json returned from Gitlab is in format:
 //{[{key1:value1, key2:value2,...keyN:valueN},...{key1:value1, key2:value2,...keyN:valueN}]}
 // $keys[] contains the key for the key/value pairs we're interested in.
