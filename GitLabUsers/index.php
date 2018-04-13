@@ -1,4 +1,5 @@
 <?php
+header("Content-Type: text/plain");
 $private_token=$_GET["token"];
 $pages=isset($_GET['pages']) ? $_GET['pages'] : 4 ;
 $keys = ["name","username","state","created_at","location","bio","last_sign_in_at","confirmed_at","last_activity_on","current_sign_in_at","email","two_factor_enabled"];
@@ -20,7 +21,7 @@ for($page = 1; $page <= $pages; $page++) {
 }
 function WriteData($jsonObject, $keys) {
 	foreach($jsonObject as $userObject) {
-		$row  =  "<br/>";
+		$row  =  "\n";
 		$row .= ConvertObjectToCSV($userObject, $keys);
 		$email = $userObject -> email;
 		$row .= FormatItem( GetNameInEmailAddress($email) ); 
