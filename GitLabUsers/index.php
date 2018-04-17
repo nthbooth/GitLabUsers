@@ -15,7 +15,7 @@ for($page = 1; $page <= $pages; $page++) {
 	$jsonString = CallAPI("GET",$url.$page);
 	$jsonObject = json_decode($jsonString);
 	if (count($jsonObject)==0) {
-		echo "<br/>Did not retrieve data from page ".$page." onwards.";break;
+		echo "\n\nDid not retrieve data from page ".$page." onwards.\n\n";break;
 	}
 	WriteData($jsonObject, $keys);
 }
